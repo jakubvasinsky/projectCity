@@ -4,21 +4,43 @@ package sample;
 import javafx.event.Event;
 import javafx.scene.control.ComboBox;
 
-import java.awt.*;
-import java.sql.SQLException;
 import java.util.List;
 
 public class Controller {
-    public ComboBox combo1;
-    List<String> countries;
-    public Controller() throws SQLException, ClassNotFoundException {
+
+    List countries;
+    List cities;
+    String country;
+
+    public ComboBox cmbCountry;
+    public ComboBox cmbCity;
+
+
+    public Controller() {
         Database database = new Database();
-        countries = database.getCountries();
+        try {
+            countries = database.getCountries();
+            cities = database.getCity(country);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 
-    public void showcountries(Event event) {
-        Database database = new Database();
-        combo1.getItems().setAll(database.getCountries());
+    public void clickcmbCountry(Event event) {
+        cmbCountry.getItems().setAll(countries);
     }
+
+    public void clickcmbCity(Event event) {
+        country = (String) cmbCountry.getValue();
+        System.out.println(country);
+
+        try {
+            cities = new Database().getCity(country);
+            cmbCity.getItems().setAll(cities);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
+}
