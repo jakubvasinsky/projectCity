@@ -1,56 +1,68 @@
 package sample;
 
-import org.w3c.dom.ls.LSOutput;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Database {
-    private final String JDBC = "com.mysql.cj.jdbc.Driver";
-    private final String URL = "jdbc:mysql://itsovy.sk:3306/world_x?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
-    private Connection connection;
-
-
-    public Connection getConnection() throws Exception {
-        Class.forName(JDBC);
-        connection = DriverManager.getConnection(URL, "student", "kosice2019");
-        return connection;
-    }
-    public List getCountries() throws Exception {
-        String countries = "SELECT * FROM country";
-
-        Connection connection = getConnection();
-        PreparedStatement ps = connection.prepareStatement(countries);
-        ResultSet rs = ps.executeQuery();
-        String country;
+    public List getCountries(){
         List<String> list = new ArrayList<>();
-        while(rs.next()) {
-            country = (rs.getString("Code") + "   " + rs.getString("Name"));
-            list.add(country);
-
-        }
-        connection.close();
-        return list;
-    }
-    public List getCity(String country) throws Exception {
         try {
-            String countries = "SELECT city.name FROM country JOIN city ON country.code = city.countrycode where country.name like ? ";
+            Connection con = getConnection();
 
-            PreparedStatement statement = getConnection().prepareStatement(countries);
-            statement.setString(1,country);
-            ResultSet rs = statement.executeQuery();
-            String city;
-            List<String> list = new ArrayList();
-            while (rs.next()) {
-                country = (rs.getString("Name"));
-                list.add(country);
+            PreparedStatement ps = con.prepareStatement("SELECT Code, Name FROM country");
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                list.add(rs.getString("Name"));
             }
-            connection.close();
-            return list;
-        } catch (Exception e) {
+        }catch (Exception e){
             e.printStackTrace();
         }
-        return null;
+        return list;
+    }
+
+    public List getCities(String country){
+        List<City> list = new ArrayList<>();
+        try{
+            Connection con = getConnection();
+
+            PreparedStatement ps = con.prepareStatement("SELECT city.name, json_extract(info, '$.Population') AS Info, Code, Code2 FROM country JOIN city ON country.code = city.countrycode WHERE country.name LIKE ? ");
+            ps.setString(1, country);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                String name = rs.getString("city.name");
+                String code2 = rs.getString("Code2");
+                String code3 = rs.getString("Code");
+                int population = rs.getInt("Info");
+                City city = new City(name, population, code3, code2);
+                list.add(city);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public String getPopulation(String country, String city){
+        String population = null;
+        try{
+            Connection con = getConnection();
+
+            PreparedStatement ps = con.prepareStatement("SELECT json_extract(info, '$.Population') FROM city JOIN country ON city.countryCode = country.code WHERE country.name LIKE ? AND city.name LIKE ?");
+            ps.setString(1, country);
+            ps.setString(2, city);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()){
+                population = rs.getString(1);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return population;
+    }
+
+    private Connection getConnection() throws ClassNotFoundException, SQLException {
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        return DriverManager.getConnection("jdbc:mysql://itsovy.sk:3306/world_x", "student", "kosice2019");
     }
 }
