@@ -43,26 +43,30 @@ public class Database {
         return list;
     }
 
-    public String getPopulation(String country, String city){
-        String population = null;
-        try{
-            Connection con = getConnection();
 
-            PreparedStatement ps = con.prepareStatement("SELECT json_extract(info, '$.Population') FROM city JOIN country ON city.countryCode = country.code WHERE country.name LIKE ? AND city.name LIKE ?");
-            ps.setString(1, country);
-            ps.setString(2, city);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()){
-                population = rs.getString(1);
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        return population;
-    }
 
     private Connection getConnection() throws ClassNotFoundException, SQLException {
         Class.forName("com.mysql.cj.jdbc.Driver");
         return DriverManager.getConnection("jdbc:mysql://itsovy.sk:3306/world_x", "student", "kosice2019");
+    }
+
+    public String getPopulation(String city) {
+        try {
+            String populationString = "SELECT json_extract(Info, '$.Population') AS pop FROM city JOIN country ON country.code = city.countrycode WHERE city.Name LIKE ?";
+
+            PreparedStatement statement = getConnection().prepareStatement(populationString);
+            statement.setString(1,city);
+            ResultSet rs = statement.executeQuery();
+            String population;
+            if (rs.next()) {
+                population = (rs.getString(1));
+                return population;
+            }
+            getConnection().close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+
     }
 }

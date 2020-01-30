@@ -5,6 +5,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 public class Controller {
@@ -62,11 +63,32 @@ public class Controller {
     }
 
     public void getInfo(){
-        Database db = new Database();
-        String pop = db.getPopulation(getcombobox1Value(), getcombobox2Value());
-        population.setText(pop);
+
+        String city = (String) combo2.getValue();
+        System.out.println(city);
+
+        try {
+            String population = new Database().getPopulation((String) combo2.getValue());
+            lblPopulation.setText("Population: " + population);
+            System.out.println(population);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        lblCity.setText("City: "+combo2.getValue());
+        lblCountry.setText("Country: "+combo1.getValue());
+        System.out.println(combo1.getValue());
+        System.out.println(combo2.getValue());
     }
 
-
+    private String formatPopString(int population) {
+        String data = String.valueOf(population);
+        DecimalFormat formatter = new DecimalFormat("#,###");
+        String yourFormattedString = formatter.format(population);
+        return yourFormattedString;
     }
+}
+
+
+
+
 
