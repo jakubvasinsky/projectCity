@@ -34,7 +34,7 @@ public class Database {
                 String code2 = rs.getString("Code2");
                 String code3 = rs.getString("Code");
                 int population = rs.getInt("Info");
-                City city = new City(name, population, code3, code2);
+                City city = new City(name, population, code3, code2,country);
                 list.add(city);
             }
         }catch (Exception e){

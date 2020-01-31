@@ -1,7 +1,5 @@
 package sample;
 
-import javax.xml.namespace.QName;
-
 public class Weather {
     private String name;
     private String country;

@@ -16,75 +16,87 @@ public class Controller {
     public Label lblCity;
     public Label lblCountry;
     public Label lblPopulation;
+    public Label lblTemp;
+    public Label lblHum;
+    public Label lblDis;
     List countries;
-    List cities;
+    List<City> cities;
 
     public Controller() {
         Database db = new Database();
         countries = db.getCountries();
     }
-    public void initialize(){
+
+    public void initialize() {
         combo2.setDisable(true);
         okButton.setDisable(true);
     }
 
-    public void populateCB1(){
+    public void populateCB1() {
         Database db = new Database();
         countries = db.getCountries();
         combo1.getItems().setAll(countries);
     }
 
-    public String getcombobox1Value(){
-        if (combo1.getValue()==null){
+    public String getcombobox1Value() {
+        if (combo1.getValue() == null) {
             combo2.setDisable(true);
-        }else{
+        } else {
             combo2.setDisable(false);
         }
         return combo1.getValue();
     }
 
-    public String getcombobox2Value(){
-        if (combo2.getValue()==null){
+    public String getcombobox2Value() {
+        if (combo2.getValue() == null) {
             okButton.setDisable(true);
-        }else{
+        } else {
             okButton.setDisable(false);
         }
         return combo2.getValue();
     }
 
-    public void populateCB2(){
+    public void populateCB2() {
         Database db = new Database();
-        List<City> city;
-        city = db.getCities(getcombobox1Value());
+        List<City> cities;
+        cities = db.getCities(getcombobox1Value());
         combo2.getItems().clear();
-        for(City s: city){
-            combo2.getItems().add(s.getName());
+        for (City c : cities) {
+            combo2.getItems().add(c.getName());
         }
     }
 
-    public void getInfo(){
+    public void getInfo() {
 
-        String city = (String) combo2.getValue();
-        System.out.println(city);
-
-        try {
-            String population = new Database().getPopulation((String) combo2.getValue());
-            lblPopulation.setText("Population: " + population);
-            System.out.println(population);
-        } catch (Exception e) {
-            e.printStackTrace();
+        String cityString = combo2.getValue();
+        System.out.println(cityString);
+        City city = null;
+        for (City c : cities){
+            if (c.getName().equals(cityString)){
+                city = c;
+                break;
+            }
         }
-        lblCity.setText("City: "+combo2.getValue());
-        lblCountry.setText("Country: "+combo1.getValue());
-        System.out.println(combo1.getValue());
-        System.out.println(combo2.getValue());
-    }
+        if (city == null)
+            return;
 
-    private String formatPopString(int population) {
+        population.setText("Population: "+formatPopString(city.getPopulation()));
+        lblDis.setText("District: "+city.getThreeCode());
+
+        Weather weather = new WebWeather().getData(city.getName(), city.getTwoCode());
+        lblCity.setText("Name: "+String.valueOf(weather.getName()));
+        lblCountry.setText("Country: "+String.valueOf(weather.getCountry()));
+        lblTemp.setText("Temperature: "+ String.valueOf(weather.getTemp())+"°C");
+        lblHum.setText("Humidity: "+formatPopString(weather.getHumidity())+"%");
+
+
+
+    }
+    private String formatPopString(int population){
         String data = String.valueOf(population);
         DecimalFormat formatter = new DecimalFormat("#,###");
-        String yourFormattedString = formatter.format(population);
-        return yourFormattedString;
+        return formatter.format(population);
+
     }
 }
 

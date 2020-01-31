@@ -19,14 +19,16 @@
             <ComboBox fx:id="combo2" layoutX="222.0" layoutY="138.0" onAction="#getcombobox2Value" onShowing="#populateCB2" prefWidth="150.0" />
             <Label layoutX="243.0" layoutY="110.0" prefHeight="17.0" prefWidth="109.0" text="Select city:" />
             <Button fx:id="okButton" layoutX="394.0" layoutY="210.0" mnemonicParsing="false" onAction="#getInfo" prefHeight="25.0" prefWidth="52.0" text="OK" />
-            <Label fx:id="lblCity" layoutX="46.0" layoutY="178.0" text="City: " />
-            <Label fx:id="lblCountry" layoutX="42.0" layoutY="202.0" text="Country: " />
-            <Label fx:id="lblPopulation" layoutX="44.0" layoutY="227.0" text="Population: " />
-
+            <Label fx:id="lblCity" layoutX="16.0" layoutY="129.0" opacity="0.0" text="City:" />
+            <Label fx:id="lblPopulation" layoutX="27.0" layoutY="202.0" text="Population:" />
+            <Label fx:id="lblTemp" layoutX="14.0" layoutY="219.0" text="Temperature:" />
+            <Label fx:id="lblHum" layoutX="32.0" layoutY="236.0" text="Humidity:" />
+            <Label fx:id="lblDis" layoutX="34.0" layoutY="253.0" text="Distance:" />
             <Label layoutX="153.0" layoutY="30.0" prefHeight="43.0" prefWidth="139.0" text="Project City Info" textAlignment="JUSTIFY">
                <font>
                   <Font name="System Bold" size="18.0" />
                </font></Label>
+            <CheckBox layoutX="383.0" layoutY="244.0" mnemonicParsing="false" text="Details" />
          </children>
       </Pane>
    </children>
