@@ -41,6 +41,8 @@ public class WebWeather {
                 long sunset = jsonObject.getJSONObject("sys").getLong("sunset");
                 long visibility = jsonObject.getLong("visibility");
                 return weather;
+            }else{
+                throw new NoSuchCityException("City not found");
             }
 
 

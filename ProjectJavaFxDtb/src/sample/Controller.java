@@ -71,8 +71,8 @@ public class Controller {
         String cityString = combo2.getValue();
         System.out.println(cityString);
         City city = null;
-        for (City c : cities){
-            if (c.getName().equals(cityString)){
+        for (City c : cities) {
+            if (c.getName().equals(cityString)) {
                 city = c;
                 break;
             }
